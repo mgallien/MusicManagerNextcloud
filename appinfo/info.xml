@@ -15,13 +15,4 @@ Would allow working with your music on your Nextcloud account</description>
 	<dependencies>
 		<nextcloud min-version="30" max-version="32"/>
 	</dependencies>
-	<navigations>
-		<navigation>
-			<id>musicmanager</id>
-			<name>Music Manager</name>
-			<route>musicmanager.page.index</route>
-			<icon>app.svg</icon>
-			<type>link</type>
-		</navigation>
-	</navigations>
 </info>

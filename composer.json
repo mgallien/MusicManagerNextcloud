@@ -1,13 +1,11 @@
 {
 	"name": "nextcloud/musicmanager",
-	"description": "Companion app for https://invent.kde.org/mgallien/musicmanager/
-Would allow working with your music on your Nextcloud account",
+	"description": "Companion app for https://invent.kde.org/mgallien/musicmanager/ Would allow working with your music on your Nextcloud account",
 	"license": "AGPL-3.0-or-later",
 	"authors": [
 		{
 			"name": "Matthieu Gallien",
-			"email": "matthieu_gallien@yahoo.fr",
-			"homepage": ""
+			"email": "matthieu_gallien@yahoo.fr"
 		}
 	],
 	"autoload": {

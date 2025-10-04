@@ -15,17 +15,17 @@ use OCP\AppFramework\OCSController;
  */
 class ApiController extends OCSController {
 	/**
-	 * An example API endpoint
+	 * An API endpoint to get all tracks
 	 *
 	 * @return DataResponse<Http::STATUS_OK, array{message: string}, array{}>
 	 *
 	 * 200: Data returned
 	 */
 	#[NoAdminRequired]
-	#[ApiRoute(verb: 'GET', url: '/api')]
-	public function index(): DataResponse {
+	#[ApiRoute(verb: 'GET', url: '/tracks')]
+	public function allTracks(): DataResponse {
 		return new DataResponse(
-			['message' => 'Hello world!']
+			['message' => 'All the tracks from MusicManager']
 		);
 	}
 }
