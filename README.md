@@ -1,3 +1,7 @@
+<!--
+  - SPDX-FileCopyrightText: 2025 Matthieu Gallien <matthieu_gallien@yahoo.fr>
+  - SPDX-License-Identifier: CC0-1.0
+-->
 # Music Manager
 
 MusicManager Nextcloud companion app
