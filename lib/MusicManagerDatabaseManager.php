@@ -1,5 +1,5 @@
 <?php
-/** lib/ElisaDatabaseManager.php */
+/** lib/MusicManagerDatabaseManager.php */
 declare(strict_types=1);
 
 // SPDX-FileCopyrightText: Matthieu Gallien <matthieu_gallien@yahoo.fr>
@@ -15,7 +15,6 @@ use OCP\Files\SimpleFS\ISimpleFolder;
 use OCP\Files\SimpleFS\ISimpleFile;
 use OCP\IUserSession;
 use OCP\IUser;
-use OCP\ILogger;
 use OCP\Files\NotFoundException;
 use OCP\IConfig;
 
@@ -26,8 +25,7 @@ class MusicManagerDatabaseManager {
 	public function __construct(private IAppData $appData,
 								private IRootFolder $rootFolder,
 	                            private IUserSession $userSession,
-	                            private IConfig $config,
-	                            private ILogger $logger) {
+	                            private IConfig $config) {
 			$appDataRootFolder = $this->appData->getFolder('/');
 			if (!$appDataRootFolder->fileExists($this->userSession->getUser()->getUID())) {
 				$appDataRootFolder->newFolder($this->userSession->getUser()->getUID());
