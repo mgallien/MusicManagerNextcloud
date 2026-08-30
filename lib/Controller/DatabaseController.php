@@ -14,9 +14,12 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
 use OCP\IRequest;
 use OCP\Files\IAppData;
+use OCP\Files\IRootFolder;
 use OCP\IUserSession;
 use OCP\IConfig;
 use OCA\MusicManager\MusicManagerDatabaseManager;
+use OCA\MusicManager\MusicManagerDatabase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @psalm-suppress UnusedClass
@@ -25,15 +28,19 @@ class DatabaseController extends OCSController {
     private IAppData $appData;
 	private IUserSession $userSession;
 	private IConfig $config;
+	private IRootFolder $rootFolder;
+	private LoggerInterface $logger;
 	private MusicManagerDatabaseManager $dbManager;
 	private string $databaseFolder = '/database';
 
-    public function __construct(string $appName, IRequest $request, IAppData $appData, IUserSession $userSession, IConfig $config, MusicManagerDatabaseManager $dbManager)
+    public function __construct(string $appName, IRequest $request, IAppData $appData, IUserSession $userSession, IConfig $config, IRootFolder $rootFolder, LoggerInterface $logger, MusicManagerDatabaseManager $dbManager)
     {
         parent::__construct($appName, $request);
         $this->appData = $appData;
 		$this->userSession = $userSession;
 		$this->config = $config;
+		$this->rootFolder = $rootFolder;
+		$this->logger = $logger;
 		$this->dbManager = $dbManager;
 		
 		$this->dbManager->syncDatabase();
@@ -62,5 +69,24 @@ class DatabaseController extends OCSController {
 		$appDataDatabaseFileName = $dataDirPath . '/appdata_' . $instanceId . '/elisa/' . $this->userSession->getUser()->getUID() . $this->databaseFolder . '/elisaDatabase.db';
 
 		return new DataResponse($appDataDatabaseFileName);
+	}
+
+	/**
+	 * API endpoint to access music database
+	 *
+	 * @return DataResponse<Http::STATUS_OK, array{message: string}, array{}>
+	 *
+	 * 200: Data returned
+	 */
+	#[NoAdminRequired]
+	#[ApiRoute(verb: 'POST', url: '/refreshDatabase')]
+	public function refreshDatabase(): DataResponse {
+		$allAudioFiles = $this->rootFolder->searchByMime('audio');
+		$musicDatabase = $this->dbManager->getDatabase();
+		$musicDatabase->clearDatabase();
+
+		$musicDatabase->addAudioFiles($allAudioFiles);
+
+		return new DataResponse('success');
 	}
 }

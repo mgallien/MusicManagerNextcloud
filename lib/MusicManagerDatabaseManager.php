@@ -17,35 +17,40 @@ use OCP\IUserSession;
 use OCP\IUser;
 use OCP\Files\NotFoundException;
 use OCP\IConfig;
+use Psr\Log\LoggerInterface;
 
 class MusicManagerDatabaseManager {
 	private string $databaseFolder = '/database';
 	private string $appDataDatabaseFileName;
+	private LoggerInterface $logger;
 
 	public function __construct(private IAppData $appData,
 								private IRootFolder $rootFolder,
 	                            private IUserSession $userSession,
-	                            private IConfig $config) {
-			$appDataRootFolder = $this->appData->getFolder('/');
-			if (!$appDataRootFolder->fileExists($this->userSession->getUser()->getUID())) {
-				$appDataRootFolder->newFolder($this->userSession->getUser()->getUID());
-			}
-			$userAppDataFolder = $appDataRootFolder->getFolder($this->userSession->getUser()->getUID());
-			if (!$userAppDataFolder->fileExists($this->databaseFolder)) {
-				$userAppDataFolder->newFolder($this->databaseFolder);
-			}
-			$dataDirPath = $this->config->getSystemValue('datadirectory');
-			$instanceId = $this->config->getSystemValue('instanceid');
-			$this->appDataDatabaseFileName = $dataDirPath . '/appdata_' . $instanceId . '/elisa/' . $this->userSession->getUser()->getUID() . $this->databaseFolder . '/elisaDatabase.db';
+	                            private IConfig $config,
+								LoggerInterface $logger) {
+		$this->logger = $logger;
+
+		$appDataRootFolder = $this->appData->getFolder('/');
+		if (!$appDataRootFolder->fileExists($this->userSession->getUser()->getUID())) {
+			$appDataRootFolder->newFolder($this->userSession->getUser()->getUID());
+		}
+		$userAppDataFolder = $appDataRootFolder->getFolder($this->userSession->getUser()->getUID());
+		if (!$userAppDataFolder->fileExists($this->databaseFolder)) {
+			$userAppDataFolder->newFolder($this->databaseFolder);
+		}
+		$dataDirPath = $this->config->getSystemValue('datadirectory');
+		$instanceId = $this->config->getSystemValue('instanceid');
+		$this->appDataDatabaseFileName = $dataDirPath . '/appdata_' . $instanceId . '/musicmanager/' . $this->userSession->getUser()->getUID() . $this->databaseFolder . '/elisaDatabase.db';
 	}
 
-	public function getDatabase(): ElisaDatabase {
+	public function getDatabase(): MusicManagerDatabase {
 		try {
-			return new ElisaDatabase($this->logger, $this->appDataDatabaseFileName);
+			return new MusicManagerDatabase($this->appDataDatabaseFileName, $this->logger);
 		}
 		catch (NotFoundException $ex)
 		{
-			return new ElisaDatabase($this->logger, '');
+			return new MusicManagerDatabase('', $this->logger);
 		}
 	}
 

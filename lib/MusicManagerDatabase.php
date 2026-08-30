@@ -10,12 +10,18 @@ namespace OCA\MusicManager;
 use SQLite3;
 use OCP\ILogger;
 use OCP\Files\Node;
+use Psr\Log\LoggerInterface;
 
 class MusicManagerDatabase extends SQLite3
 {
-	function __construct(private ILogger $logger,
-                         private string $dbName)
+	private string $dbName;
+	private LoggerInterface $logger;
+
+	function __construct(string $dbName, LoggerInterface $logger)
 	{
+		$this->dbName = $dbName;
+		$this->logger = $logger;
+
 		parent::__construct($dbName);
 
 		$this->exec('CREATE TABLE IF NOT EXISTS `Composer`
@@ -150,5 +156,19 @@ class MusicManagerDatabase extends SQLite3
 
 	public function updateAudioFiles($path): void {
 		$this->logger->info('update ' . $path . 'in db file');
+	}
+
+	public function clearDatabase(): void {
+		$this->exec("DELETE FROM `Composer`");
+		$this->exec("DELETE FROM `Artists`");
+		$this->exec("DELETE FROM `DatabaseVersion`");
+		$this->exec("DELETE FROM `DatabaseVersionV15`");
+		$this->exec("DELETE FROM `DiscoverSource`");
+		$this->exec("DELETE FROM `Albums`");
+		$this->exec("DELETE FROM `Genre`");
+		$this->exec("DELETE FROM `Lyricist`");
+		$this->exec("DELETE FROM `Radios`");
+		$this->exec("DELETE FROM `Tracks`");
+		$this->exec("DELETE FROM `TracksData`");
 	}
 }
