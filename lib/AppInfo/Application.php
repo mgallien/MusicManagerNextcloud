@@ -24,11 +24,6 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
-                Util::connectHook('OC_Filesystem', 'post_create', MusicManagerFilesHooksStatic::class, 'fileCreate');
-                Util::connectHook('OC_Filesystem', 'post_update', MusicManagerFilesHooksStatic::class, 'fileUpdate');
-                Util::connectHook('OC_Filesystem', 'delete', MusicManagerFilesHooksStatic::class, 'fileDelete');
-                Util::connectHook('OC_Filesystem', 'rename', MusicManagerFilesHooksStatic::class, 'fileMove');
-                Util::connectHook('OC_Filesystem', 'post_rename', MusicManagerFilesHooksStatic::class, 'fileMovePost');
 	}
 
 	public function boot(IBootContext $context): void {
